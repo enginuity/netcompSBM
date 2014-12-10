@@ -8,13 +8,13 @@ NOTE: All the code herein will assume that the working directory is THIS base di
 -------------------------
 Files in base directory: 
 compile_package.R -- This R script will rebuild the package
-load_library.R -- This script loads the netcomp_sbm package and dependency packages
-load_source.R -- This script loads the functions in the netcomp_sbm package into the global directory (by running 'source' on the source code files)
+load_library.R -- This script loads the netcompSBM package and dependency packages
+load_source.R -- This script loads the functions in the netcompSBM package into the global directory (by running 'source' on the source code files)
 
 -------------------------
 Directory Structure: 
 
-netcomp_sbm/ -- This folder contains all the functions (and source) for this package. 
+netcompSBM/ -- This folder contains all the functions (and source) for this package. The format is a standard R package. 
 
 sbm1.1/ -- This is the original C++ code by Aurelien Decelle, Florent Krzakala, Lenka Zdeborova and Pan Zhang, and *should not* be modified (just here for reference). There is a README in that folder. 
 
