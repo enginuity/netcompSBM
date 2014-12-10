@@ -5,5 +5,6 @@ Version: 0.1
 Date: 2014-12-09
 Author: Lawrence Wang
 Maintainer: Lawrence Wang <lawrencw@andrew.cmu.edu>
-Description: This code fits SBMs using EM; it works with multiple networks and also with missing observations
+Description: This code fits SBMs using EM; it works with multiple networks and
+    also with missing observations
 License: What license is it under?
