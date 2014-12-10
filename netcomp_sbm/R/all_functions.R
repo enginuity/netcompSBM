@@ -1,10 +1,25 @@
+##@S Currently stores ALL sbm fitting code. This will be split up later. 
 
+
+#' Run the EM algorithm to fit a SBM
+#' 
+#' @param A Input adjacency matrix. This can contain NAs, values > 1, as a total count over a number of networks.
+#' @param Nobs Number of network observations
+#' @param q Number of classes in the SBM
+#' @param niter Max number of EM steps
+#' @param verbose Lots of output?
+#' @param stop_thres Stopping threshold (will stop before max niter, if change in probabilty estimate matrix is smaller than this value)
+#' 
+#' @return List of SBM parameters
+#' 
+#' @export
+#' 
 fit_SBM = function(A, Nobs = 1, q, niter = 100, verbose = TRUE, stop_thres = 0.000001) {
-  ## A = adjacency matrix ( can contain NAs, can contain double (multiple-count) edges)
-  ## Nobs = # of added adjacency matrices in (A)
   if (FALSE) {
+    ## Testing parameters
     A = graph; q = 2; niter = 10; Nobs = 1; verbose = TRUE; stop_thres = 0.0001
   }
+  
   ## Initialize all elements
   N = nrow(A)
   nodeps = rep(1/q, length = q)
@@ -57,6 +72,14 @@ fit_SBM = function(A, Nobs = 1, q, niter = 100, verbose = TRUE, stop_thres = 0.0
   })))
 }
 
+#' Symmetrizes matrix by using upper-triangular portion
+#' 
+#' @param m Input matrix
+#' 
+#' @return Filled matrix (with lower triangular portion replaced by the upper triangular portion). 
+#' 
+#' @export
+#' 
 symmetrize_mat = function(m) {
   dm = diag(m)
   m[lower.tri(m, diag = TRUE)] = 0
@@ -67,8 +90,19 @@ symmetrize_mat = function(m) {
 }
 
 
+#' Compute the likelihood of a SBM fit
+#' 
+#' @param A Input adjacency matrix
+#' @param fl Output of fit_SBM
+#' @param Nobs Number of network observations
+#' @param hidden Only return fit on 'hidden' nodes?
+#' @param partial_A Partial adjacency matrix (with some nodes NA'd out)
+#' 
+#' @return Likelihood of the SBM fit
+#' 
+#' @export
+#' 
 SBM_likelihood_fit = function(A, fl, Nobs = 1, hidden = FALSE, partial_A) {
-  ## fl = fit list (output of fit_SBM)
   PM = outer(fl$classes, fl$classes, FUN = function(x,y) { mapply(FUN = function(a,b) {fl$edgeprobs[a,b]}, x,y)})
   RM = A * log(PM) + (Nobs - A) * log(1 - PM)
   diag(RM) = 0
@@ -76,6 +110,21 @@ SBM_likelihood_fit = function(A, fl, Nobs = 1, hidden = FALSE, partial_A) {
   return(sum(RM, na.rm = T))
 }
 
+
+#' Fit a few SBMs, and return the one with best likelihood
+#' 
+#' @param A Input adjacency matrix
+#' @param full_A Full adjacency matrix (if we want to do cv, A would be a matrix with missing values)
+#' @param q Number of classes
+#' @param Nfits Number of fits to try
+#' @param Nobs Number of network observatins
+#' @param hidden Use hidden edges to compute likelihood?
+#' @param verbose Lots of output?
+#' 
+#' @return Best model
+#' 
+#' @export
+#' 
 search_best_SBM = function(A, full_A = A, q, Nfits, Nobs = 1, hidden = FALSE, verbose = TRUE) {
   bestlik = -Inf
   bestmod = NULL
@@ -96,6 +145,16 @@ search_best_SBM = function(A, full_A = A, q, Nfits, Nobs = 1, hidden = FALSE, ve
   return(bestmod)
 }
 
+
+#' Hides a random set of edges
+#' 
+#' @param A Input adjacency matrix
+#' @param frac Fraction of edges to hide
+#' 
+#' @return Adjacency matrix with hidden edges
+#' 
+#' @export
+#' 
 hide_edges = function(A, frac = 0.1) {
   tm = matrix(1:(nrow(A)^2), nrow = nrow(A))
   vals = tm[upper.tri(tm)]
@@ -104,6 +163,20 @@ hide_edges = function(A, frac = 0.1) {
   return(symmetrize_mat(A))
 }
 
+
+#' Run CV for the SBM
+#' 
+#' @param A Input adjacency matrix
+#' @param qs Vector of class sizes
+#' @param Nfits Number of fits to find 'optimal'
+#' @param Nobs Number of network observations
+#' @param CV_folds Number of CV runs per number of classes
+#' @param verbose Lots of output?
+#' 
+#' @return CV error (likelihoods for link prediction)
+#' 
+#' @export
+#' 
 CV_SBM = function(A, qs, Nfits = 50, Nobs, CV_folds = 10, verbose = TRUE) {
   liks_mat = matrix(0, nrow = CV_folds, ncol = length(qs))
   for(j in 1:CV_folds) {
@@ -117,12 +190,5 @@ CV_SBM = function(A, qs, Nfits = 50, Nobs, CV_folds = 10, verbose = TRUE) {
   }
   return(liks_mat)
 }
-
-
-
-
-
-
-
 
 
