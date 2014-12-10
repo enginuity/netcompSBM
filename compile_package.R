@@ -9,7 +9,7 @@ require(metacode) ## This is a package I've written to speed up my own coding
 require(stringr)
 
 ## Update documentation -- this looks for new parameters & 
-update_fx_documentation(FD = FilesDescription(dirlist = "netcomp_sbm/R/"), fill_emptyparam = FALSE)
+update_fx_documentation(FD = FilesDescription(dirlist = "netcompSBM/R/"), fill_emptyparam = FALSE)
 
 
 # Compile Package ---------------------------------------------------------
@@ -17,8 +17,8 @@ update_fx_documentation(FD = FilesDescription(dirlist = "netcomp_sbm/R/"), fill_
 
 ## Generate the documentation -- THIS MUST be run before building packages (since the documentation files are not version-controlled, as the version-controlled version is in the raw source code)
 require(roxygen2)
-roxygenise("netcomp_sbm/", clean = TRUE)
+roxygenise("netcompSBM/", clean = TRUE)
 
 ## Install the package
-system("R CMD INSTALL netcomp_sbm")
+system("R CMD INSTALL netcompSBM")
 
