@@ -3,5 +3,6 @@
 *.RData
 sbm1.1/sbm
 *.o
-.Rproj
+netcomp_sbm.Rproj
 .Rproj.user
+.Rhistory
