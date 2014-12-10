@@ -8,8 +8,8 @@ NOTE: All the code herein will assume that the working directory is THIS base di
 -------------------------
 Files in base directory: 
 compile_package.R -- This R script will rebuild the package
-setup_library.R -- This script loads the netcomp_sbm package and dependency packages
-setup_source.R -- This script loads the functions in the netcomp_sbm package into the global directory (by running 'source' on the source code files)
+load_library.R -- This script loads the netcomp_sbm package and dependency packages
+load_source.R -- This script loads the functions in the netcomp_sbm package into the global directory (by running 'source' on the source code files)
 
 -------------------------
 Directory Structure: 
