@@ -1,4 +1,4 @@
-Package: netcomp_sbm
+Package: netcompSBM
 Type: Package
 Title: Fitting Stochastic Block Models
 Version: 0.1
