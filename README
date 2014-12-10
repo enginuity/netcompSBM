@@ -1,0 +1,15 @@
+netcomp_sbm
+===========
+
+R &amp; C++ code for fitting SBMs
+
+
+-------------------------
+Files in base directory: 
+
+
+-------------------------
+Directory Structure: 
+
+sbm1.1/ -- This is the original C++ code by Aurelien Decelle, Florent Krzakala, Lenka Zdeborova and Pan Zhang, and *should not* be modified (just here for reference). There is a README in that folder. 
+
