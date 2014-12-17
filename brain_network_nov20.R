@@ -67,8 +67,11 @@ sum(apply(n2, 1, sum) + apply(n1, 1, sum) == 0)
 ncomb = n1 + n2
 
 fit1 = fit_SBM(A = n1, Nobs = 1, q = 5, niter = 25, stop_thres = 0.000001)
+#|----##--Reparameterizing this function --Wed Dec 17 15:10:23 2014--
 fit2 = fit_SBM(A = n2, Nobs = 1, q = 5, niter = 25, stop_thres = 0.000001)
+#|----##--Reparameterizing this function --Wed Dec 17 15:10:23 2014--
 fitc = fit_SBM(A = ncomb, Nobs = 1, q = 5, niter = 25, stop_thres = 0.000001)
+#|----##--Reparameterizing this function --Wed Dec 17 15:10:23 2014--
 
 
 

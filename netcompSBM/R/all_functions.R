@@ -15,6 +15,7 @@
 #' @export
 #' 
 fit_SBM = function(A, Nobs = 1, q, niter = 100, verbose = TRUE, stop_thres = 0.000001) {
+#|----##--Reparameterizing this function --Wed Dec 17 15:10:23 2014--
   if (FALSE) {
     ## Testing parameters
     A = graph; q = 2; niter = 10; Nobs = 1; verbose = TRUE; stop_thres = 0.0001
@@ -94,6 +95,7 @@ symmetrize_mat = function(mat) {
 #' 
 #' @param A Input adjacency matrix
 #' @param fl Output of fit_SBM
+#|----##--Reparameterizing this function --Wed Dec 17 15:10:23 2014--
 #' @param Nobs Number of network observations
 #' @param hidden Only return fit on 'hidden' nodes?
 #' @param partial_A Partial adjacency matrix (with some nodes NA'd out)
@@ -130,6 +132,7 @@ search_best_SBM = function(A, full_A = A, q, Nfits, Nobs = 1, hidden = FALSE, ve
   bestmod = NULL
   for(j in 1:Nfits) {
     fl = try(fit_SBM(A = A, q = q, verbose = FALSE, Nobs = Nobs), silent = TRUE)
+#|----##--Reparameterizing this function --Wed Dec 17 15:10:23 2014--
     if (class(fl) != "try-error") {
       
       newlik = SBM_likelihood_fit(A = full_A, partial_A = A, hidden = hidden, fl = fl)

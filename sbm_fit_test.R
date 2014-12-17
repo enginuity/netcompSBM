@@ -12,6 +12,7 @@ graph = sample_network_pair(g)[[1]][,,1]
 
 
 fl = fit_SBM(A = graph, q = 2)
+#|----##--Reparameterizing this function --Wed Dec 17 15:10:23 2014--
 
 
 
@@ -25,6 +26,7 @@ g$m1$probmat = matrix(c(.7, .3, .3, .5), nrow = 2)
 graph2 = apply(replicate(sample_network_pair(g)[[1]][,,1], n = 10), c(1,2), sum)
 test = search_best_SBM(A = graph2, q = 2, Nfits = 50, Nobs = 10)
 test = fit_SBM(A = graph2, q = 2, Nobs = 10)
+#|----##--Reparameterizing this function --Wed Dec 17 15:10:23 2014--
 
 
 
