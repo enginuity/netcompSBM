@@ -3,45 +3,47 @@
 
 #' Run the EM algorithm to fit a SBM
 #' 
-#' @param A Input adjacency matrix. This can contain NAs, values > 1, as a total count over a number of networks.
+#' @param adjm Input adjacency matrix. This can contain NAs, values > 1, as a total count over a number of networks.
 #' @param Nobs Number of network observations
-#' @param q Number of classes in the SBM
-#' @param niter Max number of EM steps
+#' @param Nclass Number of classes in the SBM
+#' @param Niter Max number of EM steps
 #' @param verbose Lots of output?
-#' @param stop_thres Stopping threshold (will stop before max niter, if change in probabilty estimate matrix is smaller than this value)
+#' @param stop_thres Stopping threshold (will stop before max Niter, if change in probabilty estimate matrix is smaller than this value)
 #' 
 #' @return List of SBM parameters
 #' 
 #' @export
 #' 
-fit_SBM = function(A, Nobs = 1, q, niter = 100, verbose = TRUE, stop_thres = 0.000001) {
-#|----##--Reparameterizing this function --Wed Dec 17 15:10:23 2014--
+fit_SBM = function(adjm, Nobs = 1, Nclass, Niter = 100, verbose = TRUE, stop_thres = 0.000001) {
   if (FALSE) {
     ## Testing parameters
-    A = graph; q = 2; niter = 10; Nobs = 1; verbose = TRUE; stop_thres = 0.0001
+    adjm = graph; Nclass = 2; Niter = 10; Nobs = 1; verbose = TRUE; stop_thres = 0.0001
   }
   
   ## Initialize all elements
-  N = nrow(A)
-  nodeps = rep(1/q, length = q)
-  edgeps = matrix(sum(A, na.rm = TRUE) / (N * (N-1) / 2) * runif(q * q, min = 0.1, max = 0.9), nrow = q)
-  newedgep = edgeps
+  N = nrow(adjm)
+  nodeps = rep(1/Nclass, length = Nclass)
+  edgeps = matrix(sum(adjm, na.rm = TRUE) / (N * (N-1) / 2) * runif(Nclass * Nclass, min = 0.1, max = 0.9), nrow = Nclass)
   edgeps = symmetrize_mat(edgeps)
   
-  H = matrix(0, nrow = N, ncol = q)
-  PHI = matrix(runif(q*nrow(A), min = 0.1, max = 0.9), nrow = N)
+  nodeps_new = nodeps
+  edgeps_new = edgeps
+  
+  
+  H = matrix(0, nrow = N, ncol = Nclass)
+  PHI = matrix(runif(Nclass*nrow(adjm), min = 0.1, max = 0.9), nrow = N)
   PHI = PHI / rowSums(PHI)
   
   
   ## Do iterations
-  for(I in 1:niter) {
+  for(I in 1:Niter) {
     
     ## E step
     
-    H = matrix(0, nrow = N, ncol = q)
-    for(r in 1:q) {
-      for(s in 1:q) {
-        h1 = A * log(edgeps[r,s]) + (Nobs - A) * log(1-edgeps[r,s])
+    H = matrix(0, nrow = N, ncol = Nclass)
+    for(r in 1:Nclass) {
+      for(s in 1:Nclass) {
+        h1 = adjm * log(edgeps[r,s]) + (Nobs - adjm) * log(1-edgeps[r,s])
         H[,r] = H[,r] + sapply(1:N, function(x) {sum(h1[x,-x] * PHI[-x,s], na.rm = TRUE)})
       }
     }
@@ -50,21 +52,26 @@ fit_SBM = function(A, Nobs = 1, q, niter = 100, verbose = TRUE, stop_thres = 0.0
     PHI = peH / rowSums(peH)
     
     ## M step
-    nodeps = apply(PHI, 2, sum) / N
-    for(r in 1:q) {
-      for(s in r:q) {
+    nodeps_new = apply(PHI, 2, sum) / N
+    for(r in 1:Nclass) {
+      for(s in r:Nclass) {
         Psq = PHI[,r,drop = FALSE] %*% t(PHI[,s,drop = FALSE])
-        num = A * Psq
-        den = matrix(as.numeric(!is.na(A)), nrow = N) * Nobs * Psq
-        newedgep[r,s] = sum(num[lower.tri(num)], na.rm = TRUE) / sum(den[lower.tri(den)])
+        num = adjm * Psq
+        den = matrix(as.numeric(!is.na(adjm)), nrow = N) * Nobs * Psq
+        edgeps_new[r,s] = sum(num[lower.tri(num)], na.rm = TRUE) / sum(den[lower.tri(den)])
       }
     }
-    newedgep = symmetrize_mat(newedgep)
+    edgeps_new = symmetrize_mat(edgeps_new)
     
     ## Compute change in edge probability matrix
-    delta = sum(abs(newedgep - edgeps))
-    edgeps = newedgep
+    delta = sum(abs(edgeps_new - edgeps))
     if (verbose) { cat("Iteration ", I, " ----- change in epmat = ", delta, "\n", sep = "") }
+    
+    ## Update old parameters
+    edgeps = edgeps_new
+    nodeps = nodeps_new
+    
+    ## Stop if threshold is met
     if (delta < stop_thres) { break }
   }
   
