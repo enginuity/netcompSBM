@@ -72,21 +72,21 @@ fit_SBM = function(A, Nobs = 1, q, niter = 100, verbose = TRUE, stop_thres = 0.0
   })))
 }
 
+
 #' Symmetrizes matrix by using upper-triangular portion
 #' 
-#' @param m Input matrix
+#' @param mat Input matrix
 #' 
 #' @return Filled matrix (with lower triangular portion replaced by the upper triangular portion). 
 #' 
 #' @export
 #' 
-symmetrize_mat = function(m) {
-  dm = diag(m)
-  m[lower.tri(m, diag = TRUE)] = 0
-  m = m + t(m)
-  diag(m) = dm
-  return(m)
-  
+symmetrize_mat = function(mat) {
+  diag_mat = diag(mat)
+  mat[lower.tri(mat, diag = TRUE)] = 0
+  mat = mat + t(mat)
+  diag(mat) = diag_mat
+  return(mat)
 }
 
 
