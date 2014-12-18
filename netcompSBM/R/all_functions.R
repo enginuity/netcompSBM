@@ -261,11 +261,40 @@ CV_SBM = function(A, qs, Nfits = 50, Nobs, CV_folds = 10, verbose = 1) {
   for(j in 1:CV_folds) {
     if (verbose > 0) {cat("\nCV fold number", j, date(), "\n")}
     subA = hide_edges(A)
-#|----##--Reparameterizing this function --Thu Dec 18 00:37:59 2014--
     for(Q in seq_along(qs)) {
       if (verbose > 0) { cat(qs[Q], "-") }
       bestfit = search_best_SBM(A = subA, full_A = A, q = qs[Q], Nfits = Nfits, Nobs = Nobs, verbose = verbose - 1)
       liks_mat[j,Q] = SBM_likelihood_fit(A = A, fl = bestfit, hidden = TRUE, partial_A = subA)
+    }
+  }
+  return(liks_mat)
+}
+
+
+
+
+#' Run CV for the SBM
+#' 
+#' @param adjm Input adjacency matrix
+#' @param Nclass_v Vector of class sizes
+#' @param Nfits Number of fits to find 'optimal'
+#' @param Nobs Number of network observations
+#' @param NCV_folds Number of CV runs per number of classes
+#' @param verbose Lots of output?
+#' 
+#' @return CV error (likelihoods for link prediction)
+#' 
+#' @export
+#' 
+CV_SBM_v2 = function(adjm, Nclass_v, Nfits = 50, Nobs = 1, NCV_folds = 10, verbose = 1, Niter = 100, stop_thres = 0.000001) {
+  liks_mat = matrix(0, nrow = NCV_folds, ncol = length(Nclass_v))
+  for(j in 1:NCV_folds) {
+    if (verbose > 0) {cat("\nCV fold number", j, date(), "\n")}
+    sub_adjm = hide_edges(adjm)
+    for(Q in seq_along(Nclass_v)) {
+      if (verbose > 0) { cat(Nclass_v[Q], "-") }
+      bestfit = search_best_SBM_v2(adjm = sub_adjm, full_adjm = adjm, Nclass = Nclass_v[Q], Nfits = Nfits, Nobs = Nobs, do_cv = TRUE, verbose = verbose - 1, Niter = Niter, stop_thres = stop_thres)
+      liks_mat[j,Q] = SBM_likelihood_fit_v2(adjm = adjm, part_adjm = sub_adjm, fitl = bestfit, mode = "hidden", Nobs = Nobs)
     }
   }
   return(liks_mat)
