@@ -1,3 +1,45 @@
+
+read_network = function(filename) {
+  ## Reads the two specified networks and creates the appropriate adjacency matrices and needed output. 
+  
+  r = readLines(filename)
+  cat("Reading Data \n")
+  
+  ## Find separation between nodes and edges, and find genes & connections
+  gene_rows = min(grep("connect", r)) - 1
+  
+  genes = r[1:gene_rows]
+  conns = r[-1:-gene_rows]
+  
+  ## Compute adjacency matrix
+  cat("Computing Adjacency Matrix \n")
+  adjm = matrix(0, nrow = length(genes), ncol = length(genes))
+  for(j in seq_along(conns)) {
+    gene_match = strsplit(conns[j], split = "\tconnect\t")[[1]]
+    matches = match(gene_match, genes)
+    if (!(any(is.na(matches)))) { adjm[matches[1], matches[2]] = 1}
+  }
+  
+  ## Symmetrize if necessary
+  if (sum(adjm != t(adjm)) > 0) {
+    adjm = adjm + t(adjm)
+  }
+  
+  return(list(genes = genes, adjm = adjm))
+}
+
+data1 = read_network("../../network-comparison/netcomp-project/data/brain/mdcbc815.network")
+data2 = read_network("../../network-comparison/netcomp-project/data/brain/pfc17.network")
+
+combine_networks = function(net1, net2, type) {
+  ## net1, net2 are in format; list of 'genes' = character vector of gene names, 'adjm' = adjacency matrix using the current set of gene names
+  ## type = "union" or "intersect" intersect only keeps common genes; union keeps ALL genes
+  
+  ## TODO: [Finsih writing this function]
+}
+
+filename = "../../network-comparison/netcomp-project/data/brain/mdcbc815.network"
+
 m1 = readLines("data/brain/mdcbc815.network")
 m2 = readLines("data/brain/pfc17.network")
 
