@@ -117,16 +117,17 @@ SBM_likelihood_fit = function(A, fl, Nobs = 1, hidden = FALSE, partial_A) {
 
 
 
+## TODO: [Documentation-AUTO] Check/fix Roxygen2 Documentation (SBM_likelihood_fit_v2)
 #' Compute the likelihood of a SBM fit
 #' 
 #' @param adjm Input adjacency matrix
+#' @param part_adjm Partial adjacency matrix (with some nodes NA'd out)
 #' @param fitl Output of fit_SBM
-#' @param Nobs Number of network observations
 #' @param mode Cases -- 'full', 'hidden', 'known'
 #' -- full gets likelihood of entire input adjm (ignores part_adjm)
 #' -- hidden gets only likelihood on hidden nodes (used for CV)
 #' -- known gets likelihood on non-hidden nodes (used for fitting on known nodes)
-#' @param part_adjm Partial adjacency matrix (with some nodes NA'd out)
+#' @param Nobs Number of network observations
 #' 
 #' @return Likelihood of the SBM fit
 #' 
@@ -182,6 +183,7 @@ search_best_SBM = function(A, full_A = A, q, Nfits, Nobs = 1, hidden = FALSE, ve
 }
 
 
+## TODO: [Documentation-AUTO] Check/fix Roxygen2 Documentation (search_best_SBM_v2)
 #' Fit a few SBMs, and return the one with best likelihood
 #' 
 #' @param adjm Input adjacency matrix
@@ -191,6 +193,8 @@ search_best_SBM = function(A, full_A = A, q, Nfits, Nobs = 1, hidden = FALSE, ve
 #' @param Nobs Number of network observatins
 #' @param do_cv Do cross-validation?
 #' @param verbose Lots of output?
+#' @param Niter temp
+#' @param stop_thres temp
 #' 
 #' @return Best model
 #' 
@@ -273,6 +277,7 @@ CV_SBM = function(A, qs, Nfits = 50, Nobs, CV_folds = 10, verbose = 1) {
 
 
 
+## TODO: [Documentation-AUTO] Check/fix Roxygen2 Documentation (CV_SBM_v2)
 #' Run CV for the SBM
 #' 
 #' @param adjm Input adjacency matrix
@@ -281,6 +286,8 @@ CV_SBM = function(A, qs, Nfits = 50, Nobs, CV_folds = 10, verbose = 1) {
 #' @param Nobs Number of network observations
 #' @param NCV_folds Number of CV runs per number of classes
 #' @param verbose Lots of output?
+#' @param Niter temp
+#' @param stop_thres temp
 #' 
 #' @return CV error (likelihoods for link prediction)
 #' 
