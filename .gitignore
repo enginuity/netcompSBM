@@ -8,3 +8,4 @@ netcomp_sbm.Rproj
 .Rhistory
 *~
 *.Rd
+metacode_logs/*
