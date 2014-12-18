@@ -32,6 +32,7 @@ test = fit_SBM(A = graph2, q = 2, Nobs = 10)
 
 
 graph3 = hide_edges(graph)
+#|----##--Reparameterizing this function --Thu Dec 18 00:37:59 2014--
 test3 = search_best_SBM(A = graph3, full_A = graph, q = 2, Nfits = 50)
 SBM_likelihood_fit(A = graph, fl = test3, hidden = TRUE, partial_A = graph3)
 
