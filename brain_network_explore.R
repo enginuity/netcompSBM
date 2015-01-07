@@ -35,7 +35,14 @@ combine_networks = function(net1, net2, type) {
   ## net1, net2 are in format; list of 'genes' = character vector of gene names, 'adjm' = adjacency matrix using the current set of gene names
   ## type = "union" or "intersect" intersect only keeps common genes; union keeps ALL genes
   
-  ## TODO: [Finsih writing this function]
+  if (type == "union") {
+    
+  } else if (type == "intersect") {
+    
+  } else {
+    stop("Bad 'type'")
+  }
+  ## TODO: [Finish writing this function]
 }
 
 filename = "../../network-comparison/netcomp-project/data/brain/mdcbc815.network"
