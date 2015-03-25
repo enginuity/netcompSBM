@@ -1,5 +1,6 @@
 ##@S Currently stores ALL sbm fitting code. This will be split up later. 
 
+## TODO: [Documentation-AUTO] Check/fix Roxygen2 Documentation (fit_SBM_v2)
 #' Run the EM algorithm to fit a SBM
 #' 
 #' @param adjm Input adjacency matrix. This can contain NAs, values > 1, as a total count over a number of networks.
@@ -8,6 +9,7 @@
 #' @param Niter Max number of EM steps
 #' @param verbose Lots of output?
 #' @param stop_thres Stopping threshold (will stop before max Niter, if change in probabilty estimate matrix is smaller than this value)
+#' @param method temp
 #' 
 #' @return List of SBM parameters
 #' 
@@ -61,6 +63,23 @@ fit_SBM_v2 = function(adjm, Nobs = 1, Nclass, Niter = 100, verbose = 1, stop_thr
 
 
 
+## TODO: [Documentation-AUTO] Check/fix Roxygen2 Documentation (EM_SBM_mf)
+#' <What does this function do>
+#' 
+#' @param adjm temp
+#' @param Nobs temp
+#' @param nodeps temp
+#' @param edgeps temp
+#' @param H temp
+#' @param PHI temp
+#' @param Niter temp
+#' @param stop_thres temp
+#' @param verbose temp
+#' 
+#' @return temp
+#' 
+#' @export
+#' 
 EM_SBM_mf = function(adjm, Nobs, nodeps, edgeps, H, PHI, Niter, stop_thres, verbose) {
   
   N = nrow(adjm)
@@ -107,6 +126,23 @@ EM_SBM_mf = function(adjm, Nobs, nodeps, edgeps, H, PHI, Niter, stop_thres, verb
               classes = sapply(1:N, function(x) { order(PHI[x,], decreasing = TRUE)[1] }), nsteps = I))
 }
 
+## TODO: [Documentation-AUTO] Check/fix Roxygen2 Documentation (EM_SBM_bp)
+#' <What does this function do>
+#' 
+#' @param adjm temp
+#' @param Nobs temp
+#' @param nodeps temp
+#' @param edgeps temp
+#' @param PHI temp
+#' @param AUX temp
+#' @param Niter temp
+#' @param stop_thres temp
+#' @param verbose temp
+#' 
+#' @return temp
+#' 
+#' @export
+#' 
 EM_SBM_bp = function(adjm, Nobs, nodeps, edgeps, PHI, AUX, Niter, stop_thres, verbose) {
   ## Helper functions for BP
   compute_aggmsg = function(id = NULL) {
@@ -229,6 +265,23 @@ EM_SBM_bp = function(adjm, Nobs, nodeps, edgeps, PHI, AUX, Niter, stop_thres, ve
 }
 
 
+## TODO: [Documentation-AUTO] Check/fix Roxygen2 Documentation (EM_SBM_bp_rescaled)
+#' <What does this function do>
+#' 
+#' @param adjm temp
+#' @param Nobs temp
+#' @param nodeps temp
+#' @param edgeps temp
+#' @param PHI temp
+#' @param AUX temp
+#' @param Niter temp
+#' @param stop_thres temp
+#' @param verbose temp
+#' 
+#' @return temp
+#' 
+#' @export
+#' 
 EM_SBM_bp_rescaled = function(adjm, Nobs, nodeps, edgeps, PHI, AUX, Niter, stop_thres, verbose) {
   ## This version uses the probabilities intead of the cab matrix. 
   

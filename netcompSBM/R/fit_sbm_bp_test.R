@@ -1,10 +1,16 @@
-
+#' Fit SBM using BP
+#' 
 #' @param adjm Input adjacency matrix. This can contain NAs, values > 1, as a total count over a number of networks.
 #' @param Nobs Number of network observations
 #' @param Nclass Number of classes in the SBM
 #' @param Niter Max number of EM steps
 #' @param verbose Lots of output?
 #' @param stop_thres Stopping threshold (will stop before max Niter, if change in probabilty estimate matrix is smaller than this value)
+#' 
+#' @return temp
+#' 
+#' @export
+#' 
 fit_SBM_BP = function(adjm, Nobs = 1, Nclass, Niter = 100, verbose = 1, stop_thres = 0.000001) {
   if(FALSE) {
     adjm = graph
