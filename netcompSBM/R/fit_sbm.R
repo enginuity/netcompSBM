@@ -9,18 +9,13 @@
 #' @param Niter Max number of EM steps
 #' @param verbose Lots of output?
 #' @param stop_thres Stopping threshold (will stop before max Niter, if change in probabilty estimate matrix is smaller than this value)
-#' @param method temp
+#' @param method allows 'bp', 'mf', 'bp_scaled'
 #' 
 #' @return List of SBM parameters
 #' 
 #' @export
 #' 
 fit_SBM_v2 = function(adjm, Nobs = 1, Nclass, Niter = 100, verbose = 1, stop_thres = 0.000001, method = "bp") {
-  ## method -- allows 'bp', 'mf' 
-  ## mf = mean field approximation
-  ## bp = bp algorithm given in paper
-  ## bp_scaled = scaled bp; makes notation more reasonable?
-  
   require(igraph)
   
   if (FALSE) {
@@ -113,6 +108,7 @@ EM_SBM_mf = function(adjm, Nobs, nodeps, edgeps, H, PHI, Niter, stop_thres, verb
     ## Compute change in parameter estimates
     delta = sum(abs(edgeps_new - edgeps)) + sum(abs(nodeps_new - nodeps))
     if (verbose > 0) { cat("Iteration ", I, " ----- change in edgeps and nodeps = ", delta, "\n", sep = "") }
+    if (verbose > 1) { cat("\t\t Log-likelihood: ", compute_sbm_loglik(class_assign = sapply(1:N, function(x) { order(PHI[x,], decreasing = TRUE)[1] }), adjm = adjm, nodeps = nodeps_new, edgeps = edgeps_new, Nobs = Nobs), "\n") }
     
     ## Update old parameters
     edgeps = edgeps_new
@@ -125,6 +121,7 @@ EM_SBM_mf = function(adjm, Nobs, nodeps, edgeps, H, PHI, Niter, stop_thres, verb
   return(list(nodeps = nodeps, edgeps = edgeps, PHI = PHI, 
               classes = sapply(1:N, function(x) { order(PHI[x,], decreasing = TRUE)[1] }), nsteps = I))
 }
+
 
 ## TODO: [Documentation-AUTO] Check/fix Roxygen2 Documentation (EM_SBM_bp)
 #' <What does this function do>
@@ -251,6 +248,7 @@ EM_SBM_bp = function(adjm, Nobs, nodeps, edgeps, PHI, AUX, Niter, stop_thres, ve
     ## Compute change in parameter estimates
     delta = sum(abs(edgeps_new - edgeps)) + sum(abs(nodeps_new - nodeps))
     if (verbose > 0) { cat("Iteration ", I, " ----- change in edgeps and nodeps = ", delta, "\n", sep = "") }
+    if (verbose > 1) { cat("\t\t Log-likelihood: ", compute_sbm_loglik(class_assign = sapply(1:N, function(x) { order(PHI[,x], decreasing = TRUE)[1] }), adjm = adjm, nodeps = nodeps_new, edgeps = edgeps_new, Nobs = Nobs), "\n") }
     
     ## Update old parameters
     edgeps = edgeps_new
@@ -390,6 +388,7 @@ EM_SBM_bp_rescaled = function(adjm, Nobs, nodeps, edgeps, PHI, AUX, Niter, stop_
     ## Compute change in parameter estimates
     delta = sum(abs(edgeps_new - edgeps)) + sum(abs(nodeps_new - nodeps))
     if (verbose > 0) { cat("Iteration ", I, " ----- change in edgeps and nodeps = ", delta, "\n", sep = "") }
+    if (verbose > 1) { cat("\t\t Log-likelihood: ", compute_sbm_loglik(class_assign = sapply(1:N, function(x) { order(PHI[,x], decreasing = TRUE)[1] }), adjm = adjm, nodeps = nodeps_new, edgeps = edgeps_new, Nobs = Nobs), "\n") }
     
     ## Update old parameters
     edgeps = edgeps_new
@@ -402,4 +401,34 @@ EM_SBM_bp_rescaled = function(adjm, Nobs, nodeps, edgeps, PHI, AUX, Niter, stop_
   return(list(nodeps = nodeps, edgeps = edgeps, PHI = t(PHI), 
               classes = sapply(1:N, function(x) { order(PHI[,x], decreasing = TRUE)[1] }), nsteps = I))
 }
+
+
+
+## TODO: [Documentation-AUTO] Check/fix Roxygen2 Documentation (compute_sbm_loglik)
+#' <What does this function do>
+#' 
+#' @param class_assign temp
+#' @param adjm temp
+#' @param nodeps temp
+#' @param edgeps temp
+#' @param Nobs temp
+#' 
+#' @return temp
+#' 
+#' @export
+#' 
+compute_sbm_loglik = function(class_assign, adjm, nodeps, edgeps, Nobs = 1) {
+  ## loglik = sum of logprob for classes + sum of log edge probs
+  N = length(class_assign)
+  resll = sum(log(nodeps[class_assign]))
+  caprob = matrix(NA, nrow = N, ncol = N)
+  for(i in 1:N) { for (j in 1:N) {
+    caprob[i,j] = edgeps[class_assign[i], class_assign[j]]
+  }}
+  temp = adjm * log(caprob) + (Nobs - adjm) * log(1 - caprob)
+  temp2 = temp[lower.tri(temp, diag = FALSE)]
+  resll = resll + sum(temp2[is.finite(temp2)], na.rm = TRUE)
+  return(resll)
+}
+
 
