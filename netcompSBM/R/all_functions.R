@@ -136,14 +136,15 @@ SBM_likelihood_fit = function(A, fl, Nobs = 1, hidden = FALSE, partial_A) {
 SBM_likelihood_fit_v2 = function(adjm, part_adjm, fitl, mode, Nobs = 1) {
   ## TODO: [Test] this function
   ## Compute edge probability matrix for model 
-  PM = outer(fitl$classes, fitl$classes, FUN = function(x,y) { mapply(FUN = function(a,b) {fitl$edgeprobs[a,b]}, x,y)})
+  PM = outer(fitl$classes, fitl$classes, FUN = function(x,y) { mapply(FUN = function(a,b) {fitl$edgeps[a,b]}, x,y)})
+  ## NOTE CHANGED HERE -- wont work for old code anymore
   
   RM = adjm * log(PM) + (Nobs - adjm) * log(1 - PM)
   diag(RM) = 0
   
   if (mode == "full") return(sum(RM))
-  if (mode == "hidden") return(sum(RM[is.na(partial_A)]))
-  if (mode == "known") return(sum(RM[!is.na(partial_A)]))
+  if (mode == "hidden") return(sum(RM[is.na(part_adjm)]))
+  if (mode == "known") return(sum(RM[!is.na(part_adjm)]))
   stop("Invalid mode")
 }
 

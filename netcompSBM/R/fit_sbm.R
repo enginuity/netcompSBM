@@ -27,7 +27,7 @@ fit_SBM_v2 = function(adjm, Nobs = 1, Nclass, Niter = 100, verbose = 1, stop_thr
   ## TODO: [Upgrade] Allow input of randomness (or of starting points)
   N = nrow(adjm) ## This is the number of nodes
   nodeps = rep(1/Nclass, length = Nclass)
-  edgeps = symmetrize_mat(matrix(sum(adjm, na.rm = TRUE) / (N * (N-1) / 2) * runif(Nclass * Nclass, min = 0.1, max = 0.9), nrow = Nclass))
+  edgeps = symmetrize_mat(matrix(sum(adjm, na.rm = TRUE) / (Nobs * N * (N-1) / 2) * runif(n = Nclass * Nclass, min = 0.1, max = 0.9), nrow = Nclass))
   
   if (method == "mf") { 
     H = matrix(0, nrow = N, ncol = Nclass)
@@ -84,7 +84,7 @@ EM_SBM_mf = function(adjm, Nobs, nodeps, edgeps, H, PHI, Niter, stop_thres, verb
     ## E step
     H = H * 0
     for(r in 1:Nclass) { for(s in 1:Nclass) {
-      h1 = adjm * log(edgeps[r,s]) + (Nobs - adjm) * log(1-edgeps[r,s])
+      h1 = adjm * log(edgeps[r,s]) + (Nobs - adjm) * log(1 - edgeps[r,s])
       H[,r] = H[,r] + sapply(1:N, function(x) {sum(h1[x,-x] * PHI[-x,s], na.rm = TRUE)})
     }}
     H = H + abs(max(H)) #rescale to prevent exponentiation errors
@@ -99,10 +99,10 @@ EM_SBM_mf = function(adjm, Nobs, nodeps, edgeps, H, PHI, Niter, stop_thres, verb
         Psq = PHI[,r,drop = FALSE] %*% t(PHI[,s,drop = FALSE])
         num = adjm * Psq
         den = matrix(as.numeric(!is.na(adjm)), nrow = N) * Nobs * Psq
-        edgeps_new[r,s] = sum(num[lower.tri(num)], na.rm = TRUE) / sum(den[lower.tri(den)])
+        edgeps_new[r,s] = max(min(sum(num[lower.tri(num)], na.rm = TRUE) / sum(den[lower.tri(den)]), 0.999), 0.001) ## bound the prob by 0.999 and 0.001 to prevent weird stuff?
       }
     }
-    edgeps_new = symmetrize_mat(edgeps_new)
+    edgeps_new = symmetrize_mat(edgeps_new)    
     
     ## Check for convergence
     ## Compute change in parameter estimates
