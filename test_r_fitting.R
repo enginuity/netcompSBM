@@ -7,7 +7,7 @@ library(abind)
 library(igraph)
 
 
-gsize = 40
+gsize = 60
 netm = NetworkModelSBM(Nnodes = gsize, model_param = set_model_param(block_assign = rep(1:2, each = gsize/2), block_probs = matrix(c(.7, .2, .2, .4), nrow = 2)))
 adjm = sampleNetwork(netm)[,,1]
 
