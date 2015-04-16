@@ -9,7 +9,7 @@ require(codeProcessing) ## This is a package I've written to speed up my own cod
 require(stringr)
 
 ## Update documentation -- this looks for new parameters & 
-update_fx_documentation(FD = FilesDescription(dirlist = "netcompSBM/R/"), fill_emptyparam = FALSE)
+update_fx_documentation(FD = FilesDescription(dirlist = "netcompSBM/R/"), test_run = FALSE)
 
 
 # Compile Package ---------------------------------------------------------
