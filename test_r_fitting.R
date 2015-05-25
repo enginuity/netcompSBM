@@ -18,4 +18,7 @@ test = fit_SBM_v2(adjm = adjm, Nclass = 2, Niter = 100, method = "bp_scaled", ve
 
 test = fit_SBM_BP(adjm = adjm, Nclass = 2, Niter = 100, stop_thres = 0.001)
 
+load("test.RData")
 
+diag(test.mat) = 0
+fit_SBM_v2(adjm = test.mat, Nclass = 3, Niter = 100, method = "mf", verbose = 2)

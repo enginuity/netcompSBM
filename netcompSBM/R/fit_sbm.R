@@ -1,7 +1,12 @@
 ##@S Currently stores ALL sbm fitting code. This will be split up later. 
 
-## TODO: [Documentation-AUTO] Check/fix Roxygen2 Documentation (fit_SBM_v2)
+
 #' Run the EM algorithm to fit a SBM
+#' 
+#' For the method parameter, there are three choices: 'mf', 'bp', and 'bp_scaled'. 
+#' mf == mean field approximation; this is probably fastest in R (the others should be faster when written in C...)
+#' bp == belief propegation; bp_scaled == version with scaled parameters; should make no difference...
+#' 
 #' 
 #' @param adjm Input adjacency matrix. This can contain NAs, values > 1, as a total count over a number of networks.
 #' @param Nobs Number of network observations
