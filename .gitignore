@@ -9,3 +9,4 @@ netcomp_sbm.Rproj
 *~
 *.Rd
 metacode_logs/*
+netcompSBM/NAMESPACE
