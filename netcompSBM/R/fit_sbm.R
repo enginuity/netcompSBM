@@ -20,7 +20,7 @@
 #' 
 #' @export
 #' 
-fit_SBM_v2 = function(adjm, Nobs = 1, Nclass, Niter = 100, verbose = 1, stop_thres = 0.000001, method = "bp") {
+fit_SBM = function(adjm, Nobs = 1, Nclass, Niter = 100, verbose = 1, stop_thres = 0.000001, method = "bp") {
   require(igraph)
   
   if (FALSE) {
