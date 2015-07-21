@@ -12,8 +12,11 @@ netm = NetworkModelSBM(Nnodes = gsize, model_param = set_model_param(block_assig
 adjm = sampleNetwork(netm)[,,1]
 
 test = fit_SBM_v2(adjm = adjm, Nclass = 2, Niter = 100, method = "mf", verbose = 2)
+#|----##Renamed to fit_SBM --Tue May 26 21:03:28 2015--
 test = fit_SBM_v2(adjm = adjm, Nclass = 2, Niter = 50, method = "bp", verbose = 2)
+#|----##Renamed to fit_SBM --Tue May 26 21:03:28 2015--
 test = fit_SBM_v2(adjm = adjm, Nclass = 2, Niter = 100, method = "bp_scaled", verbose = 2)
+#|----##Renamed to fit_SBM --Tue May 26 21:03:28 2015--
 
 
 test = fit_SBM_BP(adjm = adjm, Nclass = 2, Niter = 100, stop_thres = 0.001)
@@ -22,3 +25,4 @@ load("test.RData")
 
 diag(test.mat) = 0
 fit_SBM_v2(adjm = test.mat, Nclass = 3, Niter = 100, method = "mf", verbose = 2)
+#|----##Renamed to fit_SBM --Tue May 26 21:03:28 2015--

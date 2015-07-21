@@ -8,15 +8,15 @@
 #' bp == belief propegation; bp_scaled == version with scaled parameters; should make no difference...
 #' 
 #' 
-#' @param adjm Input adjacency matrix. This can contain NAs, values > 1, as a total count over a number of networks.
-#' @param Nobs Number of network observations
-#' @param Nclass Number of classes in the SBM
-#' @param Niter Max number of EM steps
-#' @param verbose Lots of output?
-#' @param stop_thres Stopping threshold (will stop before max Niter, if change in probabilty estimate matrix is smaller than this value)
-#' @param method allows 'bp', 'mf', 'bp_scaled'
+#' @param adjm [Matrix(int)] :: Input adjacency matrix. This can contain NAs, values > 1, as a total count over a number of networks.
+#' @param Nobs [int, 1] :: Number of network observations
+#' @param Nclass [int] :: Number of classes in the SBM
+#' @param Niter [int, 100] :: Max number of EM steps
+#' @param verbose [int, 1] :: Lots of output?
+#' @param stop_thres [double, 0.000001] :: Stopping threshold (will stop before max Niter, if change in probabilty estimate matrix is smaller than this value)
+#' @param method [char, "bp"] :: Choices are ('bp', 'mf', 'bp_scaled')
 #' 
-#' @return List of SBM parameters
+#' @return [List] List of SBM parameters
 #' 
 #' @export
 #' 

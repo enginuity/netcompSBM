@@ -1,82 +1,6 @@
 ##@S Currently stores ALL sbm fitting code. This will be split up later. 
 
 
-#' Run the EM algorithm to fit a SBM
-#' 
-#' @param adjm Input adjacency matrix. This can contain NAs, values > 1, as a total count over a number of networks.
-#' @param Nobs Number of network observations
-#' @param Nclass Number of classes in the SBM
-#' @param Niter Max number of EM steps
-#' @param verbose Lots of output?
-#' @param stop_thres Stopping threshold (will stop before max Niter, if change in probabilty estimate matrix is smaller than this value)
-#' 
-#' @return List of SBM parameters
-#' 
-#' @export
-#' 
-fit_SBM = function(adjm, Nobs = 1, Nclass, Niter = 100, verbose = 1, stop_thres = 0.000001) {
-  if (FALSE) {
-    ## Testing parameters
-    adjm = graph; Nclass = 2; Niter = 10; Nobs = 1; verbose = 1; stop_thres = 0.0001
-  }
-  
-  ## Initialize all elements
-  N = nrow(adjm)
-  nodeps = rep(1/Nclass, length = Nclass)
-  edgeps = matrix(sum(adjm, na.rm = TRUE) / (N * (N-1) / 2) * runif(Nclass * Nclass, min = 0.1, max = 0.9), nrow = Nclass)
-  edgeps = symmetrize_mat(edgeps)
-  
-  nodeps_new = nodeps
-  edgeps_new = edgeps
-  
-  H = matrix(0, nrow = N, ncol = Nclass)
-  PHI = matrix(runif(Nclass*nrow(adjm), min = 0.1, max = 0.9), nrow = N)
-  PHI = PHI / rowSums(PHI)
-  
-  ## Do iterations
-  for(I in 1:Niter) {
-    
-    ## E step
-    H = matrix(0, nrow = N, ncol = Nclass)
-    for(r in 1:Nclass) {
-      for(s in 1:Nclass) {
-        h1 = adjm * log(edgeps[r,s]) + (Nobs - adjm) * log(1-edgeps[r,s])
-        H[,r] = H[,r] + sapply(1:N, function(x) {sum(h1[x,-x] * PHI[-x,s], na.rm = TRUE)})
-      }
-    }
-    H = H + abs(max(H))
-    peH = t(nodeps * t(exp(H)))
-    PHI = peH / rowSums(peH)
-    
-    ## M step
-    nodeps_new = apply(PHI, 2, sum) / N
-    for(r in 1:Nclass) {
-      for(s in r:Nclass) {
-        Psq = PHI[,r,drop = FALSE] %*% t(PHI[,s,drop = FALSE])
-        num = adjm * Psq
-        den = matrix(as.numeric(!is.na(adjm)), nrow = N) * Nobs * Psq
-        edgeps_new[r,s] = sum(num[lower.tri(num)], na.rm = TRUE) / sum(den[lower.tri(den)])
-      }
-    }
-    edgeps_new = symmetrize_mat(edgeps_new)
-    
-    ## Compute change in edge probability matrix
-    delta = sum(abs(edgeps_new - edgeps))
-    if (verbose > 0) { cat("Iteration ", I, " ----- change in epmat = ", delta, "\n", sep = "") }
-    
-    ## Update old parameters
-    edgeps = edgeps_new
-    nodeps = nodeps_new
-    
-    ## Stop if threshold is met
-    if (delta < stop_thres) { break }
-  }
-  
-  return(list(nodeprobs = nodeps, edgeprobs = edgeps, classes = sapply(1:N, function(x) {
-    order(PHI[x,], decreasing = TRUE)[1]
-  })))
-}
-
 
 #' Symmetrizes matrix by using upper-triangular portion
 #' 
@@ -99,6 +23,8 @@ symmetrize_mat = function(mat) {
 #' 
 #' @param A Input adjacency matrix
 #' @param fl Output of fit_SBM
+#|----##**fit_SBM will be replaced by fit_SBM_v2; update this code to correspond with the new code... --Tue May 26 21:00:00 2015--
+#|----##Renamed to fit_SBM --Tue May 26 21:03:28 2015--
 #' @param Nobs Number of network observations
 #' @param hidden Only return fit on 'hidden' nodes?
 #' @param partial_A Partial adjacency matrix (with some nodes NA'd out)
@@ -123,6 +49,8 @@ SBM_likelihood_fit = function(A, fl, Nobs = 1, hidden = FALSE, partial_A) {
 #' @param adjm Input adjacency matrix
 #' @param part_adjm Partial adjacency matrix (with some nodes NA'd out)
 #' @param fitl Output of fit_SBM
+#|----##**fit_SBM will be replaced by fit_SBM_v2; update this code to correspond with the new code... --Tue May 26 21:00:00 2015--
+#|----##Renamed to fit_SBM --Tue May 26 21:03:28 2015--
 #' @param mode Cases -- 'full', 'hidden', 'known'
 #' -- full gets likelihood of entire input adjm (ignores part_adjm)
 #' -- hidden gets only likelihood on hidden nodes (used for CV)
@@ -168,6 +96,8 @@ search_best_SBM = function(A, full_A = A, q, Nfits, Nobs = 1, hidden = FALSE, ve
   bestmod = NULL
   for(j in 1:Nfits) {
     fl = try(fit_SBM(adjm = A, Nclass = q, verbose = verbose - 1, Nobs = Nobs), silent = TRUE)
+#|----##**fit_SBM will be replaced by fit_SBM_v2; update this code to correspond with the new code... --Tue May 26 21:00:00 2015--
+#|----##Renamed to fit_SBM --Tue May 26 21:03:28 2015--
     if (class(fl) != "try-error") {
       
       newlik = SBM_likelihood_fit(A = full_A, partial_A = A, hidden = hidden, fl = fl)
@@ -207,6 +137,8 @@ search_best_SBM_v2 = function(adjm, full_adjm = NULL, Nclass, Nfits = 50, Nobs =
   
   for (F in 1:Nfits) {
     fl = try(fit_SBM(adjm = adjm, Nobs = Nobs, Nclass = Nclass, Niter = Niter, verbose = verbose - 1, stop_thres = stop_thres))
+#|----##**fit_SBM will be replaced by fit_SBM_v2; update this code to correspond with the new code... --Tue May 26 21:00:00 2015--
+#|----##Renamed to fit_SBM --Tue May 26 21:03:28 2015--
     if (class(fl) != "try-error") {
       if (do_cv) {
         newlik = SBM_likelihood_fit_v2(adjm = full_adjm, part_adjm = adjm, fitl = fl, mode = "known", Nobs = Nobs)
