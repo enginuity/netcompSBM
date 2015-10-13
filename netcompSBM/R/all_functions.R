@@ -1,24 +1,6 @@
 ##@S Currently stores ALL sbm fitting code. This will be split up later. 
 
 
-
-#' Symmetrizes matrix by using upper-triangular portion
-#' 
-#' @param mat Input matrix
-#' 
-#' @return Filled matrix (with lower triangular portion replaced by the upper triangular portion). 
-#' 
-#' @export
-#' 
-symmetrize_mat = function(mat) {
-  diag_mat = diag(mat)
-  mat[lower.tri(mat, diag = TRUE)] = 0
-  mat = mat + t(mat)
-  diag(mat) = diag_mat
-  return(mat)
-}
-
-
 #' Compute the likelihood of a SBM fit
 #' 
 #' @param A Input adjacency matrix
@@ -161,23 +143,6 @@ search_best_SBM_v2 = function(adjm, full_adjm = NULL, Nclass, Nfits = 50, Nobs =
 }
 
 
-
-#' Hides a random set of edges
-#' 
-#' @param adjm Input adjacency matrix
-#' @param frac Fraction of edges to hide
-#' 
-#' @return Adjacency matrix with hidden edges
-#' 
-#' @export
-#' 
-hide_edges = function(adjm, frac = 0.1) {
-  tm = matrix(1:(nrow(adjm)^2), nrow = nrow(adjm))
-  vals = tm[upper.tri(tm)]
-  vals = sample(vals, size = floor(length(vals) * frac))
-  adjm[vals] = NA
-  return(symmetrize_mat(adjm))
-}
 
 
 #' Run CV for the SBM
