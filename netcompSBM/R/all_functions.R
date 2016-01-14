@@ -163,6 +163,7 @@ CV_SBM = function(A, qs, Nfits = 50, Nobs, CV_folds = 10, verbose = 1) {
   for(j in 1:CV_folds) {
     if (verbose > 0) {cat("\nCV fold number", j, date(), "\n")}
     subA = hide_edges(A)
+#|----##Check parameter usage of invert_template. It's been converted into a logical argument, relying on input of template --Mon Jan 11 19:33:27 2016--
     for(Q in seq_along(qs)) {
       if (verbose > 0) { cat(qs[Q], "-") }
       bestfit = search_best_SBM(A = subA, full_A = A, q = qs[Q], Nfits = Nfits, Nobs = Nobs, verbose = verbose - 1)
@@ -196,6 +197,7 @@ CV_SBM_v2 = function(adjm, Nclass_v, Nfits = 50, Nobs = 1, NCV_folds = 10, verbo
   for(j in 1:NCV_folds) {
     if (verbose > 0) {cat("\nCV fold number", j, date(), "\n")}
     sub_adjm = hide_edges(adjm)
+#|----##Check parameter usage of invert_template. It's been converted into a logical argument, relying on input of template --Mon Jan 11 19:33:27 2016--
     for(Q in seq_along(Nclass_v)) {
       if (verbose > 0) { cat(Nclass_v[Q], "-") }
       bestfit = search_best_SBM_v2(adjm = sub_adjm, full_adjm = adjm, Nclass = Nclass_v[Q], Nfits = Nfits, Nobs = Nobs, do_cv = TRUE, verbose = verbose - 1, Niter = Niter, stop_thres = stop_thres)
